@@ -49,7 +49,7 @@ const handleNewDeveloper = async (req, res) => {
   }
 };
 const handleNewManager = async (req, res) => {
-  const { user, pwd, roles, fullName } = req.body;
+  const { user, pwd,  fullName } = req.body;
   if (!user || !pwd)
     return res
       .status(400)

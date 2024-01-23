@@ -10,7 +10,7 @@ const developerSchema = new Schema({
   },
   fullName: String,
   username: String,
-  
+
   managerId: String,
   email: String,
   projectsAssigned: { type: Array, default: [] },
@@ -18,4 +18,5 @@ const developerSchema = new Schema({
   refreshToken: String,
 });
 
-module.exports = mongoose.model("Developer", developerSchema);
+const Developer = mongoose.model("Developer", developerSchema);
+module.exports = Developer;

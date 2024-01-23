@@ -2,6 +2,7 @@ const Developer = require("../../models/Developer");
 const User = require("../../models/User");
 const Project = require("../../models/Project");
 const jwtDecode = require("jwt-decode");
+const { default: mongoose } = require("mongoose");
 
 async function getDevelopers(req, res) {
   const token = req.headers.authorization.split(" ")[1];
@@ -34,14 +35,14 @@ async function updateDeveloper(req, res) {
   dev.projectsAssigned = data.projects;
   dev.save();
 
-  //Append that employee to Project
+  //Append that employee to Project if he is not present
   const proj = await Project.updateMany(
     {
       _id: { $in: projectIds },
     },
     {
       $push: {
-        employees: { userId: devId, fullName: dev.fullName },
+        employees: new mongoose.Types.ObjectId(devId),
       },
     }
   ).exec();

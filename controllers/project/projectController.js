@@ -7,9 +7,17 @@ const Developer = require("../../models/Developer");
 const { ObjectId } = mongoose.Types;
 
 async function addProject(req, res) {
+  const { employees } = req.body;
   const token = req.headers.authorization.split(" ")[1];
   const decoded = jwtDecode(token);
-  const employeesId = req.body.employees?.map((emp) => emp.userId);
+
+  if (!employees || employees.length === 0) {
+    return res.json({ message: "Add atleast 1 Employee to the Project. " });
+  }
+
+  const employeesId = employees.map(
+    (emp) => new mongoose.Types.ObjectId(emp.userId)
+  );
   try {
     //Get the maanger id from accesstoken
     const manager = await Manager.findOne({
@@ -19,6 +27,7 @@ async function addProject(req, res) {
     //create project with managerID
     const result = await Project.create({
       ...req.body,
+      employees: employeesId,
       managerId: decoded.UserInfo.userId,
     });
 
@@ -88,7 +97,11 @@ async function addProjectTicket(req, res) {
     console.log(req.body);
     const devResult = await Developer.updateOne(
       { fullName: req.body.assignee },
-      { $push: { ticketsAssigned: { ...data, _id: new mongoose.Types.ObjectId() } } }
+      {
+        $push: {
+          ticketsAssigned: { ...data, _id: new mongoose.Types.ObjectId() },
+        },
+      }
     );
 
     console.log(devResult);
@@ -174,7 +187,7 @@ async function getProjects(req, res) {
 async function getSingleProject(req, res) {
   const id = req.query.id;
   try {
-    const result = await Project.findById(id);
+    const result = await Project.findById(id).populate("employees");
     res.status(201).json(result);
   } catch (e) {
     res.status(500).json({ message: e.message });

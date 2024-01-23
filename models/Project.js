@@ -6,7 +6,8 @@ const projectSchema = new Schema({
   description: String,
   managerId: String,
   tickets: { type: Array, default: [] },
-  employees: { type: Array, default: [{ userId: String, fullName: String }] },
+  employees: { type: Array, default: [] },
 });
 
-module.exports = mongoose.model("Project", projectSchema);
+const Project = mongoose.model("Project", projectSchema);
+module.exports = Project;

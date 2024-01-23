@@ -16,4 +16,5 @@ const managerSchema = new Schema({
   refreshToken: String,
 });
 
-module.exports = mongoose.model("Manager", managerSchema);
+const Manager = mongoose.model("Manager", managerSchema);
+module.exports = Manager;
